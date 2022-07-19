@@ -4,6 +4,7 @@ use (
 	./basicFeatures
 	./collections
 	./flowcontrol
+	./functions
 	./operations
 	./partyinvites
 	./tools
