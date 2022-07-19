@@ -63,7 +63,6 @@ func main() {
 	beta := &alpha
 	fmt.Println(newSecond == third)
 	fmt.Println(newSecond == beta)
-	
 
 	fmt.Println(*newSecond == *third)
 	fmt.Println(*newSecond == *beta)
@@ -136,6 +135,69 @@ func main() {
 		fmt.Println("Cannot parse", value100, int100err)
 	}
 
+	val0 := "0b1100100"
+	int0, int0err := strconv.ParseInt(val0, 0, 8)
+	if int0err == nil {
+		smallInt := int8(int0)
+		fmt.Println("Parsed value:", smallInt)
+	} else {
+		fmt.Println("Cannot parse", val1, int1err)
+	}
 
+	int10, int10err := strconv.ParseInt(value100, 10, 0)
+	if int10err == nil {
+		smallInt10 := int8(int10)
+		fmt.Println("Parsed value:", smallInt10)
+	} else {
+		fmt.Println("Cannot parse", value100, int10err)
+	}
 
+	intA, intAerr := strconv.Atoi(value100)
+	if intAerr == nil {
+		var intResult int = intA
+		fmt.Println("Parsed value:", intResult)
+	} else {
+		fmt.Println("Cannot parse", value100, intAerr)
+	}
+	fmt.Println("")
+
+	fl1 := "48.95"
+	float1, float1err := strconv.ParseFloat(fl1, 64)
+	if float1err == nil {
+		fmt.Println("Parsed value:", float1)
+	} else {
+		fmt.Println("Cannot parse", fl1, float1err)
+	}
+
+	fl2 := "4.895e+01"
+	float2, float2err := strconv.ParseFloat(fl2, 64)
+	if float1err == nil {
+		fmt.Println("Parsed value:", float2)
+	} else {
+		fmt.Println("Cannot parse", fl2, float2err)
+	}
+	fmt.Println("")
+
+	v1 := true
+	v2 := false
+	str1 := strconv.FormatBool(v1)
+	str2 := strconv.FormatBool(v2)
+	fmt.Println("Formatted value 1: " + str1)
+	fmt.Println("Formatted value 2: " + str2)
+
+	v := 275
+	base10String := strconv.FormatInt(int64(v), 10)
+	b10String := strconv.Itoa(v)
+	base2String := strconv.FormatInt(int64(v), 2)
+	fmt.Println("Base 10: " + base10String)
+	fmt.Println("Base 10: " + b10String)
+	fmt.Println("Base 2: " + base2String)
+
+	x1 := 49.95
+	Fstring := strconv.FormatFloat(x1, 'f', 2, 64)
+	Estring := strconv.FormatFloat(x1, 'e', -1, 64)
+	Gstring := strconv.FormatFloat(x1, 'g', 1, 64)
+	fmt.Println("Format F: " + Fstring)
+	fmt.Println("Format E: " + Estring)
+	fmt.Println("Format G: " + Gstring)
 }
