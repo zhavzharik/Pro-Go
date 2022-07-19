@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strconv"
 )
 
 func main() {
@@ -204,4 +205,86 @@ func main() {
 	arrayPtr := (*[3]string)(p1)
 	array := *arrayPtr
 	fmt.Println(array)
+	fmt.Println("")
+
+	//Working with maps
+
+	products2 := make(map[string]float64, 10)
+	products2["Kayak"] = 279
+	products2["Lifejacket"] = 48.95
+	fmt.Println("Map size:", len(products2))
+	fmt.Println("Price:", products2["Kayak"])
+	fmt.Println("Price:", products2["Hat"])
+	fmt.Println("")
+
+	products3 := map[string]float64{
+		"Kayak":      279,
+		"Lifejacket": 48.95,
+		"Hat":        0,
+	}
+	fmt.Println("Map size:", len(products3))
+	fmt.Println("Price:", products3["Kayak"])
+	value, ok := products3["Hat"] // ok = true, если карта содержит указанный ключ
+	if ok {
+		fmt.Println("Stored value:", value)
+	} else {
+		fmt.Println("No stored value")
+	}
+	delete(products3, "Hat")
+	if value, ok := products3["Hat"]; ok {
+		fmt.Println("Stored value:", value)
+	} else {
+		fmt.Println("No stored value")
+	}
+	fmt.Println("")
+
+	products3 = map[string]float64{
+		"Kayak":      279,
+		"Lifejacket": 48.95,
+		"Hat":        0,
+	}
+	for key, value := range products3 {
+		fmt.Println("Key:", key, "Value:", value)
+	}
+	fmt.Println("")
+
+	products3 = map[string]float64{
+		"Kayak":      279,
+		"Lifejacket": 48.95,
+		"Hat":        0,
+	}
+	keys := make([]string, 0, len(products3))
+	for key, _ := range products3 {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		fmt.Println("Key:", key, "Value:", products3[key])
+	}
+	fmt.Println("")
+
+	// Understanding the dual nature of strings
+	var price []rune = []rune("€48.95")
+
+	var currency string = string(price[0])
+	var amountString string = string(price[1:])
+	amount, parseErr := strconv.ParseFloat(amountString, 64)
+
+	fmt.Println("Length:", len(price))
+	fmt.Println("Currency:", currency)
+	if parseErr == nil {
+		fmt.Println("Amount:", amount)
+	} else {
+		fmt.Println("Parse Error:", parseErr)
+	}
+	fmt.Println("")
+
+	var price1 = "€48.95"
+	for index, char := range price1 {
+		fmt.Println(index, char, string(char))
+	}
+	fmt.Println("")
+	for index, char := range []byte(price1) {
+		fmt.Println(index, char)
+	}
 }
