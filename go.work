@@ -6,6 +6,7 @@ use (
 	./flowcontrol
 	./functionTypes
 	./functions
+	./methodAndInterfaces
 	./operations
 	./partyinvites
 	./structs
