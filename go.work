@@ -8,5 +8,6 @@ use (
 	./functions
 	./operations
 	./partyinvites
+	./structs
 	./tools
 )
