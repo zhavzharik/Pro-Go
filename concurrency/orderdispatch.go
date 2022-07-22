@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"math/rand"
 	"time"
 )
@@ -16,7 +17,7 @@ var Customers = []string{"Alice", "Bob", "Charlie", "Dora"}
 
 func DispatchOrders(channel chan<- DispatchNotification) {
 	rand.Seed(time.Now().UTC().UnixNano())
-	orderCount := rand.Intn(3) + 2
+	orderCount := rand.Intn(5) + 5
 	fmt.Println("Order count:", orderCount)
 	for i := 0; i < orderCount; i++ {
 		channel <- DispatchNotification{
@@ -24,6 +25,8 @@ func DispatchOrders(channel chan<- DispatchNotification) {
 			Quantity: rand.Intn(10),
 			Product:  ProductList[rand.Intn(len(ProductList)-1)],
 		}
+		time.Sleep(time.Millisecond * 750)
 	}
 	close(channel)
+	color.HiYellow("DispatchOrders functions complete")
 }
