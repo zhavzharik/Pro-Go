@@ -3,9 +3,14 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"regexp"
 	"strings"
 	"unicode"
 )
+
+func getSubstring(s string, indices []int) string {
+	return string(s[indices[0]:indices[1]])
+}
 
 func main() {
 	product := "Kayak"
@@ -145,4 +150,71 @@ func main() {
 		builder.WriteRune(' ')
 	}
 	fmt.Println("String:", builder.String())
+
+	match, err := regexp.MatchString("[A-z]oat", description)
+	if err == nil {
+		fmt.Println("Match:", match)
+	} else {
+		fmt.Println("Error:", err)
+	}
+
+	pattern, compileErr := regexp.Compile("[A-z]oat")
+	question := "Is that a goat?"
+	preference := "I like oats"
+	if compileErr == nil {
+		fmt.Println("Description:", pattern.MatchString(description))
+		fmt.Println("Question:", pattern.MatchString(question))
+		fmt.Println("Preference:", pattern.MatchString(preference))
+	} else {
+		fmt.Println("Error:", compileErr)
+	}
+
+	pattern = regexp.MustCompile("K[a-z]{4}|[A-z]oat")
+	description = "Kayak. A boat for one person."
+	firstIndex := pattern.FindStringIndex(description)
+	allIndices := pattern.FindAllStringIndex(description, -1)
+	fmt.Println("First index", firstIndex[0], "-", firstIndex[1], "=", getSubstring(description, firstIndex))
+	for i, idx := range allIndices {
+		fmt.Println("Index", i, "=", idx[0], "-", idx[1], "=", getSubstring(description, idx))
+	}
+
+	firstMatch := pattern.FindString(description)
+	allMatches := pattern.FindAllString(description, -1)
+	fmt.Println("First match:", firstMatch)
+	for i, m := range allMatches {
+		fmt.Println("Match", i, "=", m)
+	}
+
+	pattern = regexp.MustCompile(" |boat|one")
+	split := pattern.Split(description, -1)
+	for _, s := range split {
+		if s != "" {
+			fmt.Println("Substring:", s)
+		}
+	}
+
+	pattern = regexp.MustCompile("A [A-z]* for [A-z]* person")
+	str := pattern.FindString(description)
+	fmt.Println("Match:", str)
+
+	pattern = regexp.MustCompile("A ([A-z]*) for ([A-z]*) person")
+	subs := pattern.FindStringSubmatch(description)
+	for _, s := range subs {
+		fmt.Println("FindStringSubmatch:", s)
+	}
+
+	pattern = regexp.MustCompile("A (?P<type>[A-z]*) for (?P<capacity>[A-z]*) person")
+	subs = pattern.FindStringSubmatch(description)
+	for _, name := range []string{"type", "capacity"} {
+		fmt.Println(name, "=", subs[pattern.SubexpIndex(name)])
+	}
+
+	template := "(type: ${type}, capacity: ${capacity})"
+	replaced = pattern.ReplaceAllString(description, template)
+	fmt.Println(replaced)
+
+	replaced = pattern.ReplaceAllStringFunc(description, func(s string) string {
+		return "This is the replacement content"
+	})
+	fmt.Println(replaced)
 }
