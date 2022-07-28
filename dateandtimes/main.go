@@ -15,6 +15,34 @@ func PrintTime(label string, t *time.Time) {
 	fmt.Println(label, t.Format(time.RFC822Z))
 }
 
+func writeToChannel(channel chan<- string) {
+	names := []string{"Alise", "Bob", "Charlie", "Dora"}
+	for _, name := range names {
+		channel <- name
+		//time.Sleep(time.Second * 5)
+	}
+	close(channel)
+}
+
+func writeToChannelAfter(channel chan<- string) {
+	Printfln("Waiting for initial duration...")
+	// значение, отправленное по каналу, действует как сигнал и не используется напрямую, поэтому ему присваивается пустой идентификатор
+	// эффект такой же, как и при использовании функции Sleep
+	// разница, что функция After возвращает канал, который не блокируется до тех пор, пока не будет прочитано значение,
+	// а это значит, что можно указать направление, можно выполнить дополнительную работу,
+	// а затем может быть выполнено чтение канала,
+	// в результате чего канал будет заблокирован только на оставшуюся часть времени.
+	_ = <-time.After(time.Second * 2)
+	Printfln("Initial duration elapsed.")
+
+	names := []string{"Alise", "Bob", "Charlie", "Dora"}
+	for _, name := range names {
+		channel <- name
+		time.Sleep(time.Second * 1)
+	}
+	close(channel)
+}
+
 func main() {
 	current := time.Now()
 	specific := time.Date(1995, time.June, 9, 0, 0, 0, 0, time.Local)
@@ -138,6 +166,27 @@ func main() {
 	} else {
 		fmt.Println(err.Error())
 	}
+	fmt.Println()
+
+	nameChannel1 := make(chan string)
+	time.AfterFunc(time.Second*5, func() {
+		writeToChannel(nameChannel1)
+	})
+	//go writeToChannel(nameChannel1)
+	for name := range nameChannel1 {
+		Printfln("Read name : %v", name)
+	}
+	fmt.Println()
+
+	nameChannel2 := make(chan string)
+	go writeToChannelAfter(nameChannel2)
+	fmt.Println("additional work 1 can be performed")
+	fmt.Println("additional work 2 can be performed")
+	fmt.Println("additional work 3 can be performed")
+	for name := range nameChannel2 {
+		Printfln("Read name : %v", name)
+	}
+	fmt.Println()
 }
 
 //база данных часовых поясов
