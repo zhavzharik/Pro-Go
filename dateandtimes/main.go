@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"time"
 )
 
@@ -38,9 +39,69 @@ func writeToChannelAfter(channel chan<- string) {
 	names := []string{"Alise", "Bob", "Charlie", "Dora"}
 	for _, name := range names {
 		channel <- name
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 3)
 	}
 	close(channel)
+}
+
+func writeToChannelWithTimer(channel chan<- string) {
+	timer := time.NewTimer(time.Minute * 2)
+	go func() {
+		color.Green("Using NewTicker in func with timer")
+		nameChannel := make(chan string)
+		go writeToChannelWithNewTicker(nameChannel)
+		for name := range nameChannel {
+			Printfln("Read name : %v", name)
+		}
+		time.Sleep(time.Second * 3)
+		color.Cyan("Resetting timer")
+		timer.Reset(time.Second)
+	}()
+
+	Printfln("Waiting for initial duration...")
+	_ = <-timer.C
+	Printfln("Initial duration elapsed.")
+
+	names := []string{"Alise", "Bob", "Charlie", "Dora"}
+	for _, name := range names {
+		channel <- name
+		//time.Sleep(time.Second * 3)
+	}
+	close(channel)
+}
+
+func writeToChannelWithTick(channel chan<- string) {
+	names := []string{"Alise", "Bob", "Charlie", "Dora"}
+
+	tickChannel := time.Tick(time.Second)
+	index := 0
+	for {
+		<-tickChannel
+		channel <- names[index]
+		index++
+		if index == len(names) {
+			//index = 0
+			close(channel)
+			break
+		}
+	}
+}
+
+func writeToChannelWithNewTicker(channel chan<- string) {
+	names := []string{"Alise", "Bob", "Charlie", "Dora"}
+
+	ticker := time.NewTicker(time.Second / 10)
+	index := 0
+	for {
+		<-ticker.C
+		channel <- names[index]
+		index++
+		if index == len(names) {
+			ticker.Stop()
+			close(channel)
+			break
+		}
+	}
 }
 
 func main() {
@@ -70,7 +131,7 @@ func main() {
 	datesX := []string{
 		"09 Jun 95 00:00 GMT",
 		"02 Jun 15 00:00 GMT",
-		"2015-Jun-02",
+		"2015-Jun-02", // error
 	}
 	Printfln("time.RFC822 = %v", time.RFC822)
 	for _, d := range datesX {
@@ -168,6 +229,8 @@ func main() {
 	}
 	fmt.Println()
 
+	color.Cyan("Using the Time Features for Goroutines and Channels")
+	color.Green("Using AfterFunc")
 	nameChannel1 := make(chan string)
 	time.AfterFunc(time.Second*5, func() {
 		writeToChannel(nameChannel1)
@@ -178,15 +241,56 @@ func main() {
 	}
 	fmt.Println()
 
+	color.Green("Using After")
 	nameChannel2 := make(chan string)
 	go writeToChannelAfter(nameChannel2)
+	time.Sleep(time.Second * 1)
 	fmt.Println("additional work 1 can be performed")
 	fmt.Println("additional work 2 can be performed")
 	fmt.Println("additional work 3 can be performed")
-	for name := range nameChannel2 {
+	//for name := range nameChannel2 {
+	//	Printfln("Read name : %v", name)
+	//}
+	channelOpen := true
+	for channelOpen {
+		Printfln("Starting channel read")
+		select {
+		case name, ok := <-nameChannel2:
+			if !ok {
+				channelOpen = false
+				Printfln("Finishing channel read")
+				break
+			} else {
+				Printfln("Read name: %v", name)
+			}
+		case <-time.After(time.Second * 2):
+			Printfln("Timeout")
+		}
+	}
+	fmt.Println()
+
+	color.Green("Using Timer")
+	nameChannel3 := make(chan string)
+	go writeToChannelWithTimer(nameChannel3)
+	for name := range nameChannel3 {
 		Printfln("Read name : %v", name)
 	}
 	fmt.Println()
+
+	color.Green("Using Tick")
+	nameChannel4 := make(chan string)
+	go writeToChannelWithTick(nameChannel4)
+	for name := range nameChannel4 {
+		Printfln("Read name : %v", name)
+	}
+	fmt.Println()
+
+	color.Green("Using NewTicker")
+	nameChannel5 := make(chan string)
+	go writeToChannelWithNewTicker(nameChannel5)
+	for name := range nameChannel5 {
+		Printfln("Read name : %v", name)
+	}
 }
 
 //база данных часовых поясов
