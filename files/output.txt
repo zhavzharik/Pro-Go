@@ -1,0 +1,13 @@
+Time: Sat 20:19:28, Total: $81445.11
+Time: Sat 20:27:32, Total: $81445.11
+Time: Sat 20:33:44, Total: $81445.11
+Time: Sat 20:35:01, Total: $81445.11
+Time: Sat 20:45:00, Total: $81445.11
+Time: Sat 20:57:36, Total: $81445.11
+Time: Sat 21:00:01, Total: $81445.11
+Time: Sat 21:10:52, Total: $81445.11
+Time: Sat 21:20:12, Total: $81445.11
+Time: Sat 21:33:18, Total: $81445.11
+Time: Sat 21:33:31, Total: $81445.11
+Time: Sat 21:40:40, Total: $81445.11
+Time: Sat 21:48:01, Total: $81445.11

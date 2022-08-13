@@ -18,9 +18,9 @@ func LoadConfig() (err error) {
 	if err == nil {
 		defer file.Close()
 		nameSlice := make([]byte, 5)
-		file.ReadAt(nameSlice, 20)
+		file.ReadAt(nameSlice, 17) // Alice
 		Config.UserName = string(nameSlice)
-		file.Seek(55, 0)
+		file.Seek(48, 0) // {"name": "Hat", "category": "Skiing", "price": 10}, ...
 		decoder := json.NewDecoder(file)
 		err = decoder.Decode(&Config.AdditionalProducts)
 	}
