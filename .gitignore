@@ -16,6 +16,10 @@
 
 .DS_Store
 
-# certificate
+# Certificate
 *.key
 *.cer
+
+# Binary sqlite3, database,
+sqlite3
+*.db
