@@ -34,6 +34,10 @@ func main() {
 	http.Handle("/message", StringHandler{"Hello, World"})
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	http.Handle("/", http.RedirectHandler("/message", http.StatusTemporaryRedirect))
+
+	fsHandler := http.FileServer(http.Dir("./static"))
+	http.Handle("/files/", http.StripPrefix("/files", fsHandler))
+
 	go func() {
 		err := http.ListenAndServeTLS(":5500", "certificate.cer", "certificate.key", nil)
 		if err != nil {
@@ -45,3 +49,7 @@ func main() {
 		Printfln("Error: %v", err.Error())
 	}
 }
+
+//Файлы HTML зависят от пакета Bootstrap CSS для стилизации содержимого HTML.
+// для загрузки CSS-файла Bootstrap в папку static.
+//curl https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css - -output static/bootstrap.min.css
